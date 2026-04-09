@@ -17,6 +17,8 @@ import {Audio} from "expo-av"
 import { TouchableOpacity } from "react-native";
 import * as Linking from "expo-linking"
 import { SafeAreaView} from "react-native-safe-area-context";
+import Constants from expo-constants
+import * as Notifications from "expo-notifications" 
 
 
 
@@ -37,11 +39,19 @@ export default function DriverScreen() {
   const locationSub = useRef(null);
   const soundRef = useRef(null);
   const api_url = "https://ox-mvpp.onrender.com"
+  Notifications.setNotificationHandler({
+    handleNotification:async ()=>({
+      shouldShowAlert:true,
+      shouldPlaySound:true,
+      shouldSetBadge:false,
+    })
+  })
   const registerForPushNotificationsAsync = async ()=>{
-  if(Constants.isDevice){
+    try{
+      if(!Constants.isDevice) return 
     const {status:existingStatus} = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
-    if(exsitingStatus !== 'granted'){
+    if(exitingStatus !== 'granted'){
       {const {status} = await Notifications.requestPermissionsAsync()
        finalStatus = status
     }
@@ -50,7 +60,7 @@ export default function DriverScreen() {
       return
     }
     const tokenData = await Notifications.getExpoPushTokenAsync()
-    consolelog("expo push token: ",tokenData.data)
+    console.log("driver push token: ",tokenData.data)
     const userId = await AsyncStorage.getItem('userId')
     await fetch(`${api_url}/api/driver/savePushToken`,{
       method:'POST',
@@ -60,15 +70,31 @@ export default function DriverScreen() {
       body:JSON.stringify({
         driverId:userId,
         pushToken:tokenData.data
-      })
-    })
+      }),
+    });
+    }
+  
+
+
+    }catch(err){
+      console.log("push notification error ",err)
     }
   }
-}
 useEffect(()=>{
   registerForPushNotificationsAsync()
 },[])
-
+useEffect(()=>{
+  const sub = Notifications.addNotificationReceivedListener(notification =>{
+    console.log("Driver received push ",notification)
+  })
+  return ()=> sub.remove()
+},[])
+useEffect(()=>{
+  Audio.setAudioModeAsync({
+    playsInSilentModeIOS:true,
+    staysActiveInBackground:false,
+  })
+},[])
 const playNotificationSound = async () => {
   try {
     const { sound } = await Audio.Sound.createAsync(
