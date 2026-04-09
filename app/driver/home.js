@@ -17,7 +17,7 @@ import {Audio} from "expo-av"
 import { TouchableOpacity } from "react-native";
 import * as Linking from "expo-linking"
 import { SafeAreaView} from "react-native-safe-area-context";
-import Constants from expo-constants
+import Constants from "expo-constants"
 import * as Notifications from "expo-notifications" 
 
 
