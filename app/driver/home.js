@@ -51,7 +51,7 @@ export default function DriverScreen() {
       if(!Constants.isDevice) return 
     const {status:existingStatus} = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
-    if(exitingStatus !== 'granted'){
+    if(existingStatus !== 'granted'){
       {const {status} = await Notifications.requestPermissionsAsync()
        finalStatus = status
     }
