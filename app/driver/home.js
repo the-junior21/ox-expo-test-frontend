@@ -26,7 +26,7 @@ import * as Device from "expo-device"
 export default function DriverScreen() {
   const [isOnline, setIsOnline] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [driverId, setDriverId] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [location, setLocation] = useState(null);
   const [incomingRide, setIncomingRide] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -166,7 +166,7 @@ const handleTimeout = () => {
   // Optional: notify server
   socketRef.current?.emit("ride_timeout", {
     rideId: incomingRide?.rideId,
-    driverId,
+    userId: userId,
   });
 };
 
@@ -189,7 +189,7 @@ useEffect(() => {
     const loadUser = async () => {
       const userId = await AsyncStorage.getItem("userId");
       if (!userId) return;
-      setDriverId(userId);
+      setUserId(userId);
     };
     loadUser();
   }, []);
@@ -198,13 +198,13 @@ useEffect(() => {
      THE SOCKET ON
   ---------------------------- */
   useEffect(() => {
-    if (!driverId) return;
+    if (!userId) return;
 
     const socket = io(api_url);
     socketRef.current = socket;
 
     if (isOnline) {
-      socket.emit("driver_online", driverId);
+      socket.emit("driver_online", userId);
     }
 
     socket.on("new_ride_request", (rideData) => {
@@ -237,7 +237,7 @@ useEffect(() => {
     return () => {
       socket.off("new_ride_request");
     };
-  }, [driverId, isOnline]); //Driver
+  }, [userId, isOnline]); //Driver
 
   /* ---------------------------
      START LIVE LOCATION
@@ -272,7 +272,7 @@ useEffect(() => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            driverId,
+            userId: userId,
             lat: coords.latitude,
             lng: coords.longitude,
           }),
@@ -286,7 +286,7 @@ useEffect(() => {
   clearInterval(timerRef.current);
   socketRef.current?.emit("ride_rejected", {
     rideId: incomingRide?.rideId,
-    driverId,
+    userId: userId,
   });
   setModalVisible(false)
   isHandlingRide.current = false;
@@ -306,10 +306,10 @@ useEffect(() => {
   ---------------------------- */
   const toggleStatus = async (value) => {
     console.log("Sending status:", {
-      driverId,
+      userId: userId,
       isOnline: value,
     });
-    if (!driverId) {
+    if (!userId) {
       Alert.alert("Driver ID not loaded");
       return;
     }
@@ -331,14 +331,14 @@ useEffect(() => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          driverId,
+          userId: userId,
           isOnline: value,
         }),
       });
 
       setIsOnline(value);
       if (value && socketRef.current) {
-        socketRef.current.emit("driver_online", driverId);
+        socketRef.current.emit("driver_online", userId);
       }
     } catch (e) {
       Alert.alert("Network error");
@@ -399,7 +399,7 @@ useEffect(() => {
         <Switch
           value={isOnline}
           onValueChange={toggleStatus}
-          disabled={loading || !driverId}
+          disabled={loading || !userId}
         />
 
         <Text>
@@ -447,7 +447,7 @@ useEffect(() => {
                     clearInterval(timerRef.current);
                   socketRef.current.emit("accept_ride", {
                     rideId: incomingRide.rideId,
-                    driverId,
+                    userId: userId,
                   });
                   setModalVisible(false);
                 }}
@@ -493,7 +493,7 @@ useEffect(() => {
           <TouchableOpacity style={styles.completeBtn} onPress={()=>{
             socketRef.current.emit("ride_completed",{
               rideId:activeRide.rideId,
-              driverId
+              userId: userId
             })
             setActiveRide(null)
             isHandlingRide.current = false
