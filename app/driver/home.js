@@ -48,34 +48,45 @@ export default function DriverScreen() {
   })
   const registerForPushNotificationsAsync = async ()=>{
     try{
-      if(!Constants.isDevice) return 
+      if(!Constants.isDevice){
+        console.log("must be a real device")
+        return
+      }  
+
     const {status:existingStatus} = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
     if(existingStatus !== 'granted'){
-      {const {status} = await Notifications.requestPermissionsAsync()
+      const {status} = await Notifications.requestPermissionsAsync()
        finalStatus = status
-    }
+    
     if(finalStatus !== 'granted'){
-      alert('Failed to get push token!')
+      console.log("permission not granted")
       return
     }
+
     const tokenData = await Notifications.getExpoPushTokenAsync()
-    console.log("driver push token: ",tokenData.data)
+    const token = tokenData.data
+    console.log("driver push token: ",token)
     const userId = await AsyncStorage.getItem('userId')
-    await fetch(`${api_url}/api/driver/savePushToken`,{
+    console.log("userId ",userId)
+    if(!userId || !token){ 
+      console.log("missing userid or token")
+      return
+    }
+    await fetch(`${api_url}/api/users/save-push-token`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json'
       },
       body:JSON.stringify({
-        driverId:userId,
-        pushToken:tokenData.data
+        userId:userId,
+        pushToken:token
       }),
     });
+    const data = await res.json()
+    console.log("backend response ",data)
+    return token
     }
-  
-
-
     }catch(err){
       console.log("push notification error ",err)
     }
