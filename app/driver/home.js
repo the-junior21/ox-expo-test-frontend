@@ -19,6 +19,7 @@ import * as Linking from "expo-linking"
 import { SafeAreaView} from "react-native-safe-area-context";
 import Constants from "expo-constants"
 import * as Notifications from "expo-notifications" 
+import * as Device from "expo-device"
 
 
 
@@ -39,6 +40,8 @@ export default function DriverScreen() {
   const locationSub = useRef(null);
   const soundRef = useRef(null);
   const api_url = "https://ox-mvpp.onrender.com"
+
+  console.log("is Device = ",Device.isDevice)
   Notifications.setNotificationHandler({
     handleNotification:async ()=>({
       shouldShowAlert:true,
@@ -47,24 +50,37 @@ export default function DriverScreen() {
     })
   })
   const registerForPushNotificationsAsync = async ()=>{
+    console.log("the func is started")
+    console.log("out try is device ",Device.isDevice)
     try{
-      if(!Constants.isDevice){
+      if(!Device.isDevice){
         console.log("must be a real device")
+            console.log("in if try is device ",Device.isDevice)
+
         return
-      }  
+      }
+          console.log("checking permissioon")
+  
 
     const {status:existingStatus} = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
     if(existingStatus !== 'granted'){
+                console.log("req permissioon")
+
       const {status} = await Notifications.requestPermissionsAsync()
-       finalStatus = status
+      console.log("existing st ",existingStatus)
+        finalStatus = status
     
     if(finalStatus !== 'granted'){
       console.log("permission not granted")
       return
     }
+              console.log("generating p t")
 
-    const tokenData = await Notifications.getExpoPushTokenAsync()
+
+    const tokenData = await Notifications.getExpoPushTokenAsync({projectId:Constants.expoConfig?.extra?.eas?.projectId,})
+              console.log("token ",tokenData)
+
     const token = tokenData.data
     console.log("driver push token: ",token)
     const userId = await AsyncStorage.getItem('userId')
@@ -73,7 +89,10 @@ export default function DriverScreen() {
       console.log("missing userid or token")
       return
     }
-    await fetch(`${api_url}/api/users/save-push-token`,{
+    console.log("sending push token")
+    console.log("userid ",userId)
+    console.log("token ",token)
+    const res = await fetch(`${api_url}/api/users/save-push-token`,{
       method:'POST',
       headers:{
         'Content-Type':'application/json'
@@ -83,6 +102,7 @@ export default function DriverScreen() {
         pushToken:token
       }),
     });
+    console.log("req sent waiting res")
     const data = await res.json()
     console.log("backend response ",data)
     return token
