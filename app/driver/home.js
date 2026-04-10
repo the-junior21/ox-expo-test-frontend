@@ -21,7 +21,13 @@ import Constants from "expo-constants"
 import * as Notifications from "expo-notifications" 
 import * as Device from "expo-device"
 
-
+  Notifications.setNotificationHandler({
+    handleNotification:async ()=>({
+      shouldShowAlert:true,
+      shouldPlaySound:true,
+      shouldSetBadge:false,
+    })
+  })
 
 export default function DriverScreen() {
   const [isOnline, setIsOnline] = useState(false);
@@ -40,25 +46,18 @@ export default function DriverScreen() {
   const locationSub = useRef(null);
   const soundRef = useRef(null);
   const api_url = "https://ox-mvpp.onrender.com"
+  console.log(Constants.expoConfig?.extra?.eas?.projectId,)
 
-  console.log("is Device = ",Device.isDevice)
-  Notifications.setNotificationHandler({
-    handleNotification:async ()=>({
-      shouldShowAlert:true,
-      shouldPlaySound:true,
-      shouldSetBadge:false,
-    })
-  })
   const registerForPushNotificationsAsync = async ()=>{
     console.log("the func is started")
     console.log("out try is device ",Device.isDevice)
     try{
-      if(!Device.isDevice){
+      /*if(!Device.isDevice){
         console.log("must be a real device")
             console.log("in if try is device ",Device.isDevice)
 
         return
-      }
+      }*/
           console.log("checking permissioon")
   
 

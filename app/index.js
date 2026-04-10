@@ -2,8 +2,40 @@ import { StyleSheet, View, Text, Pressable,Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import i18n from "../i18n";
+import * as Notifications from "expo-notifications"
+import { useEffect } from "react";
 
+Notifications.setNotificationHandler({
+  handleNotification:async()=>({
+    shouldShowAlert:true,
+    shouldPlaySound:false,
+    shouldSetBadge:false
+  })
+})
 export default function LanguageScreen() {
+  useEffect(()=>{
+    (async ()=>{
+      const{status} = await Notifications.requestPermissionsAsync()
+      if(status !== 'granted'){
+        Alert.alert("permiss is n gr")
+      }
+    
+    })()
+  },[])
+  const triggerNotification = async()=>{
+    const {status} = await Notifications.getPermissionsAsync()
+    if(status !== 'granted'){
+      Alert.alert("permsn denied")
+      return
+    }
+    await Notifications.scheduleNotificationAsync({
+      content:{
+        title:"hello",
+        body:"not triggerd from btn"
+      },
+      trigger:null
+    })
+  }
   const selectLanguage = async (lang) => {
     i18n.locale = lang;
     await AsyncStorage.setItem("language", lang);
@@ -29,6 +61,10 @@ export default function LanguageScreen() {
         <Pressable style={styles.lang} onPress={() => selectLanguage("ar")}>
           <Text style={styles.langText}> العربية</Text>
          <Image source={require("../assets/images/ar.jpg")} style={styles.flag}/>
+
+        </Pressable>
+        <Pressable style={styles.lang} onPress={triggerNotification}>
+          <Text style={styles.langText}> notify</Text>
 
         </Pressable>
       </View>
