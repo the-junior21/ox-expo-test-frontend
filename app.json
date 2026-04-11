@@ -13,8 +13,10 @@
       "bundleIdentifier": "com.thejunior.myApp"
     },
     "android": {
-      "permissions":
-      ["NOTIFFICATIONS","ACCESS_FINE_LOCATION"],
+      "permissions": [
+        "NOTIFFICATIONS",
+        "ACCESS_FINE_LOCATION"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -51,6 +53,12 @@
           }
         }
       ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode":"development"
+        }
+      ],
       "expo-localization"
     ],
     "experiments": {
@@ -61,7 +69,8 @@
       "router": {},
       "eas": {
         "projectId": "57a9b204-5bef-41ad-8a62-ba79c1b36407"
-      }
+      },
+      "onesignalAppId":"7775cac3-1d16-4592-a1b1-52f11b733d87"
     },
     "owner": "houber_carl"
   }
