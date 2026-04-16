@@ -3,18 +3,25 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
 import {OneSignal} from "react-native-onesignal"
-import {isDevice} from "expo-device"
+import * as Device from "expo-device"
 
-if(isDevice){
-  OneSignal.initialize("7775cac3-1d16-4592-a1b1-52f11b733d87")
-  OneSignal.Notifications.requestPermission(true)
-  OneSignal.Notifications.addEventListener("foregroundWillDisplay",(event)=>{
-    event.preventDefault()
-    event.getNotification().display()
-  })
-}
 
 export default function Layout() {
+  RootLayout(){
+    useEffect(()=>{
+      const initOneSignal = async()=>{
+        if(!Device.isDevice){
+          console.log("not a real device");
+          return;
+        }
+          OneSignal.initialize("7775cac3-1d16-4592-a1b1-52f11b733d87");
+          await OneSignal.Notifications.requestPermission(true);
+          const id = await OneSignal.User.pushSubscription.getIdAsync();
+          console.log("onesignal id : ",id);
+      };
+      initOneSignal();
+    },[])
+
   useEffect(() => {
     const loadLang = async () => {
       const savedLang = await AsyncStorage.getItem("language");
@@ -25,5 +32,7 @@ export default function Layout() {
     loadLang();
   }, []);
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+
+  return <Stack screenOptions={{ headerShown: false }} />; 
+ };
 }
