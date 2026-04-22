@@ -20,6 +20,7 @@ export const setupOnesignal = async()=>{
             console.log("no user id")
             return
           }
+          console.log("we got the user id by the helper: ",userId)
           const res = await fetch(`${api_url}/api/save-onesignal-id`,{
                 method:"POST",
                 header:{

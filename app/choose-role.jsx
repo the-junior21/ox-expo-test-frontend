@@ -5,9 +5,9 @@ import { setupOnesignal } from "../utils/oneSignalHelper";
 import { useEffect } from "react";
 
 export default function ChooseRole() {
-  useEffect(()=>{
+ /* useEffect(()=>{
     setupOnesignal()
-  },[])
+  },[])*/
   const { userId } = useLocalSearchParams();
   const api_url = "https://ox-mvpp.onrender.com"
   const selectRole = async (role) => {
@@ -16,7 +16,6 @@ export default function ChooseRole() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, role }),
     });
-
     router.replace(role === "driver" ? "/driver/home" : "/passenger/home");
   };
 
