@@ -65,6 +65,8 @@ export default function Signup() {
         return
       }
       await AsyncStorage.setItem("userId",data.userId)
+      const stored = await AsyncStorage.getItem('userId')
+      console.log("stored userId: ",stored)
       router.replace({
         pathname: "/choose-role",
         params: { userId: data.userId },

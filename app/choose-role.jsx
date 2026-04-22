@@ -1,8 +1,13 @@
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import i18n from "../i18n";
+import { setupOnesignal } from "../utils/oneSignalHelper";
+import { useEffect } from "react";
 
 export default function ChooseRole() {
+  useEffect(()=>{
+    setupOnesignal()
+  },[])
   const { userId } = useLocalSearchParams();
   const api_url = "https://ox-mvpp.onrender.com"
   const selectRole = async (role) => {
