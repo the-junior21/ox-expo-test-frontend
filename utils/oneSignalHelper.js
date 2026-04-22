@@ -16,6 +16,7 @@ export const setupOnesignal = async()=>{
           if(!oneSignalId) return
           //get user info
           const userId = await AsyncStorage.getItem("userId")
+          console.log("we show the user id by using the onesignalhelper ",userId)
           if(!userId){
             console.log("no user id")
             return

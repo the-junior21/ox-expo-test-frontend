@@ -8,18 +8,19 @@ import { setupOnesignal } from "../../utils/oneSignalHelper";
 export default function tt(){
     const api_url = "https://ox-mvpp.onrender.com"
     useEffect(()=>{
-      setupOnesignal
+      setupOnesignal()
     },[])
 
 
   const selectRole = async (role) => {
             const  userId  = await AsyncStorage.getItem("userId");
-console.log("we get it from hello ",userId)
+console.log("we get id it by hello ",userId)
     await fetch(`${api_url}/api/auth/role`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, role }),
     });
+    await AsyncStorage.setItem("role",role)
     router.replace(role === "driver" ? "/driver/home" : "/passenger/home");
   };
 

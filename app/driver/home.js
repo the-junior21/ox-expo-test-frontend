@@ -5,6 +5,7 @@ import {
   Switch,
   Alert,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
@@ -19,7 +20,8 @@ import * as Linking from "expo-linking"
 import { SafeAreaView} from "react-native-safe-area-context";
 import Constants from "expo-constants"
 import * as Notifications from "expo-notifications" 
-import * as Device from "expo-device"
+import LogoutButton from "../../components/logoutButton";
+
 
   Notifications.setNotificationHandler({
     handleNotification:async ()=>({
@@ -49,8 +51,7 @@ export default function DriverScreen() {
   console.log(Constants.expoConfig?.extra?.eas?.projectId,)
 
   const registerForPushNotificationsAsync = async ()=>{
-    console.log("the func is started")
-    console.log("out try is device ",Device.isDevice)
+
     try{
       /*if(!Device.isDevice){
         console.log("must be a real device")
@@ -58,23 +59,18 @@ export default function DriverScreen() {
 
         return
       }*/
-          console.log("checking permissioon")
   
 
     const {status:existingStatus} = await Notifications.getPermissionsAsync()
     let finalStatus = existingStatus
     if(existingStatus !== 'granted'){
-                console.log("req permissioon")
 
       const {status} = await Notifications.requestPermissionsAsync()
-      console.log("existing st ",existingStatus)
         finalStatus = status
     
     if(finalStatus !== 'granted'){
-      console.log("permission not granted")
       return
     }
-              console.log("generating p t")
 
 
     const tokenData = await Notifications.getExpoPushTokenAsync({projectId:Constants.expoConfig?.extra?.eas?.projectId,})
@@ -83,7 +79,7 @@ export default function DriverScreen() {
     const token = tokenData.data
     console.log("driver push token: ",token)
     const userId = await AsyncStorage.getItem('userId')
-    console.log("userId ",userId)
+    console.log("we show id by driver home ",userId)
     if(!userId || !token){ 
       console.log("missing userid or token")
       return
@@ -392,6 +388,7 @@ useEffect(() => {
   return (
     <SafeAreaView style={{flex:1}}>
          <View style={styles.container}>
+          <LogoutButton/>
       <View style={styles.header}>
         <Text style={styles.title}>{i18n.t("driverMode")}</Text>
 
@@ -508,7 +505,6 @@ useEffect(() => {
   );
 }
 
-
 /* ---------------------------
    STYLES
 ---------------------------- */
@@ -518,6 +514,12 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "white",
     elevation: 4,
+  },
+  button:{
+    position:"absolute",
+    top:40,
+    left:20,
+    zIndex:10,
   },
   title: {
     fontSize: 20,
