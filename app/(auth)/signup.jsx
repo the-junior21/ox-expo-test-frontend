@@ -67,7 +67,7 @@ export default function Signup() {
       await AsyncStorage.setItem("userId",data.userId)
       const stored = await AsyncStorage.getItem('userId')
       console.log("stored userId: ",stored)
-      router.replace("/(auth)/hello");
+      router.replace("/(auth)/choose-role");
       Alert.alert(
         `${i18n.t("success")},
          ${i18n.t("accountCreatedSuccessfully")}`

@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
 import { useState } from "react";
+import { Text } from "@react-navigation/elements";
 
 
 
@@ -18,7 +19,10 @@ export default function Layout() {
         console.log("here we get the id by using layout ",userId)
         const role = await AsyncStorage.getItem("role")
         console.log("here we get the role by using layout ",role)
-        if(!userId){
+        if(!savedLang){
+          setStatus("noLang")
+        }
+        else if(!userId){
           setStatus("notLogged")
         }else if(!role){
           setStatus("noRole")
@@ -33,12 +37,16 @@ export default function Layout() {
       };
       init();
     },[])
-    if(status === null) return null
+    console.log("status ",status)
+    if(status === null) return <Text>Loading...</Text>
+    if(status === "noLang"){
+      return <Redirect href="/" />
+    }
     if(status === "notLogged"){
       return <Redirect href="/signup"/>
     }
     if(status === "noRole"){
-      return <Redirect href="/(auth)/hello"/>
+      return <Redirect href="/(auth)/choose-role"/>
     }
     if(status === "driver"){
       return <Redirect href="/driver/home"/>

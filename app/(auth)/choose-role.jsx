@@ -12,7 +12,7 @@ export default function tt(){
 
   const selectRole = async (role) => {
             const  userId  = await AsyncStorage.getItem("userId");
-console.log("we get id it by hello ",userId)
+console.log("we get id it by chooserole ",userId)
     await fetch(`${api_url}/api/auth/role`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
