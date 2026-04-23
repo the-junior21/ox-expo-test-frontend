@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
 import { useState } from "react";
-import { Text } from "@react-navigation/elements";
+import { Text } from "react-native";
+import { useSegments } from "expo-router";
 
 
 
@@ -12,9 +13,11 @@ import { Text } from "@react-navigation/elements";
 
 export default function Layout() {
   const [status,setStatus] = useState(null)
-  const [isLoggedIn , setIsLoggedIn] = useState(null)
+  const segments = useSegments()
     useEffect(()=>{
       const init = async()=>{
+              const savedLang = await AsyncStorage.getItem("language");
+
         const userId = await AsyncStorage.getItem("userId")
         console.log("here we get the id by using layout ",userId)
         const role = await AsyncStorage.getItem("role")
@@ -30,7 +33,6 @@ export default function Layout() {
           setStatus(role)
         }
         console.log("we get the user id to stay logged")
-      const savedLang = await AsyncStorage.getItem("language");
       if (savedLang) {
         i18n.locale = savedLang;
       }          
@@ -40,26 +42,24 @@ export default function Layout() {
     console.log("status ",status)
     if(status === null) return <Text>Loading...</Text>
     if(status === "noLang"){
+      if(segments[0] === undefined){
+          return <Stack screenOptions={{ headerShown: false }} />; 
+      }
       return <Redirect href="/" />
     }
-    if(status === "notLogged"){
-      return <Redirect href="/signup"/>
+    if(status === "notLogged" && segments[0] !== "signup"){
+      return <Redirect href="/(auth)/signup"/>
     }
-    if(status === "noRole"){
+    if(status === "noRole" && segments[1] !== "choose-role"){
       return <Redirect href="/(auth)/choose-role"/>
     }
-    if(status === "driver"){
+    if(status === "driver" && segments[0] !== "driver"){
       return <Redirect href="/driver/home"/>
     }
-    if(status === "passenger"){
+    if(status === "passenger" && segments[0] !== "passenger"){
       return <Redirect href="/passenger/home"/>
     }
-    if(isLoggedIn === null ) return null 
-    if(!isLoggedIn){
-      console.log("we will back to the signup")
-      return <Redirect href="/signup"/>
-
-    }
+ 
 
   return <Stack screenOptions={{ headerShown: false }} />; 
 }
