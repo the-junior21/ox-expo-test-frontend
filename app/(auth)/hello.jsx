@@ -7,9 +7,7 @@ import { setupOnesignal } from "../../utils/oneSignalHelper";
 
 export default function tt(){
     const api_url = "https://ox-mvpp.onrender.com"
-    useEffect(()=>{
-      setupOnesignal()
-    },[])
+
 
 
   const selectRole = async (role) => {
@@ -21,6 +19,8 @@ console.log("we get id it by hello ",userId)
       body: JSON.stringify({ userId, role }),
     });
     await AsyncStorage.setItem("role",role)
+          setupOnesignal()
+
     router.replace(role === "driver" ? "/driver/home" : "/passenger/home");
   };
 

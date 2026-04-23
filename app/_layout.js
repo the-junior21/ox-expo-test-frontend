@@ -2,7 +2,6 @@ import { Stack ,Redirect} from "expo-router";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
-import { router } from "expo-router";
 import { useState } from "react";
 
 
@@ -27,7 +26,6 @@ export default function Layout() {
           setStatus(role)
         }
         console.log("we get the user id to stay logged")
-        setIsLoggedIn(!!userId) 
       const savedLang = await AsyncStorage.getItem("language");
       if (savedLang) {
         i18n.locale = savedLang;
@@ -35,7 +33,7 @@ export default function Layout() {
       };
       init();
     },[])
-    if(status === null) return
+    if(status === null) return null
     if(status === "notLogged"){
       return <Redirect href="/signup"/>
     }

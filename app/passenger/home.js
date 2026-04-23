@@ -18,6 +18,7 @@ import { WebView } from "react-native-webview";
 import io from "socket.io-client";
 import * as Linking from "expo-linking";
 import { SafeAreaView} from "react-native-safe-area-context";
+import LogoutButton from "../../components/logoutButton";
 import * as Device from 'expo-device'
 
 export default function PassengerHome() {
@@ -243,6 +244,7 @@ setupNotification()
   return (
     <SafeAreaView style={{flex:1}}>
     <View style={styles.container}>
+      <LogoutButton/>
       {location && (
         <WebView
           ref={webViewRef}

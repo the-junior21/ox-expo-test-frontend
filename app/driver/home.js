@@ -515,12 +515,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     elevation: 4,
   },
-  button:{
-    position:"absolute",
-    top:40,
-    left:20,
-    zIndex:10,
-  },
+  
   title: {
     fontSize: 20,
     fontWeight: "bold",
