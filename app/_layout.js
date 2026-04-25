@@ -1,11 +1,11 @@
 import { Stack ,Redirect} from "expo-router";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../i18n";
 import { useState } from "react";
 import { Text } from "react-native";
 import { useSegments } from "expo-router";
-
+import { useFocusEffect } from "expo-router";
 
 
   const api_url = "https://ox-mvpp.onrender.com"
@@ -14,7 +14,9 @@ import { useSegments } from "expo-router";
 export default function Layout() {
   const [status,setStatus] = useState(null)
   const segments = useSegments()
-    useEffect(()=>{
+  const current  = segments[segments.length -1]
+  useFocusEffect(
+    useCallback(()=>{
       const init = async()=>{
               const savedLang = await AsyncStorage.getItem("language");
 
@@ -39,24 +41,25 @@ export default function Layout() {
       };
       init();
     },[])
+  )
     console.log("status ",status)
     if(status === null) return <Text>Loading...</Text>
     if(status === "noLang"){
-      if(segments[0] === undefined){
-          return <Stack screenOptions={{ headerShown: false }} />; 
+      if(current === undefined){
+          return <Stack />; 
       }
       return <Redirect href="/" />
     }
-    if(status === "notLogged" && segments[0] !== "signup"){
+    if(status === "notLogged" && current !== "signup"){
       return <Redirect href="/(auth)/signup"/>
     }
-    if(status === "noRole" && segments[1] !== "choose-role"){
+    if(status === "noRole" && current !== "choose-role"){
       return <Redirect href="/(auth)/choose-role"/>
     }
-    if(status === "driver" && segments[0] !== "driver"){
+    if(status === "driver" && current !== "driver"){
       return <Redirect href="/driver/home"/>
     }
-    if(status === "passenger" && segments[0] !== "passenger"){
+    if(status === "passenger" && current !== "passenger"){
       return <Redirect href="/passenger/home"/>
     }
  
