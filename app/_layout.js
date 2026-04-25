@@ -14,6 +14,8 @@ import { useFocusEffect } from "expo-router";
 export default function Layout() {
   const [status,setStatus] = useState(null)
   const segments = useSegments()
+  const inDriver = segments[0] === "driver"
+  const inPassenger = segments[0] === "passenger"
   const current  = segments[segments.length -1]
   useFocusEffect(
     useCallback(()=>{
@@ -56,10 +58,10 @@ export default function Layout() {
     if(status === "noRole" && current !== "choose-role"){
       return <Redirect href="/(auth)/choose-role"/>
     }
-    if(status === "driver" && current !== "driver"){
+    if(status === "driver" && !inDriver){
       return <Redirect href="/driver/home"/>
     }
-    if(status === "passenger" && current !== "passenger"){
+    if(status === "passenger" && !inPassenger){
       return <Redirect href="/passenger/home"/>
     }
  
