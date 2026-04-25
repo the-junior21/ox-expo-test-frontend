@@ -17,8 +17,8 @@ export default function Layout() {
   const inDriver = segments[0] === "driver"
   const inPassenger = segments[0] === "passenger"
   const current  = segments[segments.length -1]
-  useFocusEffect(
-    useCallback(()=>{
+  
+    useEffect(()=>{
       const init = async()=>{
               const savedLang = await AsyncStorage.getItem("language");
 
@@ -42,8 +42,8 @@ export default function Layout() {
       }          
       };
       init();
-    },[])
-  )
+    },[current])
+  
     console.log("status ",status)
     if(status === null) return <Text>Loading...</Text>
     if(status === "noLang"){

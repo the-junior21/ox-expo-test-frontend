@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect } from "react";
 import { setupOnesignal } from "../../utils/oneSignalHelper";
 
-export default function tt(){
+export default function ChooseRole(){
     const api_url = "https://ox-mvpp.onrender.com"
 
 
