@@ -39,7 +39,7 @@ export default function LanguageScreen() {
   const selectLanguage = async (lang) => {
     i18n.locale = lang;
     await AsyncStorage.setItem("language", lang);
-    router.push("/signup");
+    router.push("/(auth)/signup");
   };
 
   return (

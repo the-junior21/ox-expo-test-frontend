@@ -21,6 +21,7 @@ import { SafeAreaView} from "react-native-safe-area-context";
 import Constants from "expo-constants"
 import * as Notifications from "expo-notifications" 
 import LogoutButton from "../../components/logoutButton";
+import { setupOnesignal } from "../../utils/oneSignalHelper";
 
 
   Notifications.setNotificationHandler({
@@ -108,6 +109,10 @@ export default function DriverScreen() {
   }
 useEffect(()=>{
   registerForPushNotificationsAsync()
+},[])
+;
+useEffect(()=>{
+   setupOnesignal()
 },[])
 useEffect(()=>{
   const sub = Notifications.addNotificationReceivedListener(notification =>{

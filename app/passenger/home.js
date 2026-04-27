@@ -123,18 +123,44 @@ setupNotification()
       if (!userId) return;
 
       ////////////////////
+locationSub.current = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 5000,
+        distanceInterval: 10,
+      },
+      (loc) => {
+        const coords = loc.coords;
+        setLocation(coords);
 
-      await fetch(`${api_url}/api/passenger/location`, {
+
+        // Send location to backend
+        fetch(`${api_url}/api/passenger/location`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            passengerId: userId,
+            lat: coords.latitude,
+            lng: coords.longitude,
+          }),
+        }).catch(() => {});
+      },
+    );
+
+      ////////////////////
+      //
+     /* await fetch(`${api_url}/api/passenger/location`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           passengerId: userId,
-          lat: latitude,
-          lng: longitude,
+          lat: coords.latitude,
+          lng: coords.longitude,
         }),
-      });
+      });*/
+      //
       await fetch(`${api_url}/api/driver/nearby`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
