@@ -11,9 +11,18 @@ export const setupOnesignal = async()=>{
         }
                   OneSignal.initialize("7775cac3-1d16-4592-a1b1-52f11b733d87");
                    await OneSignal.Notifications.requestPermission(true);
-          const oneSignalId = await OneSignal.User.pushSubscription.getIdAsync();
-          console.log("onesignal id : ",oneSignalId);
-          if(!oneSignalId) return
+                   let oneSignalId = null 
+                   let attempts = 0
+                   while(!oneSignalId && attempts < 10){
+                    await new Promise(res => setTimeout(res,10000))
+                    oneSignalId = await OneSignal.User.pushSubscription.getIdAsync();
+                    console.log(`attempt ${attempts + 1} - onesignalId: `,oneSignalId)
+                    attempts++
+                   }
+          if(!oneSignalId){
+            console.log(("could not get onesignalid after retires"))
+            return
+          }
           //get user info
           const userId = await AsyncStorage.getItem("userId")
           console.log("we show the user id by using the onesignalhelper ",userId)

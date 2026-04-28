@@ -19,7 +19,6 @@ console.log("we get id it by chooserole ",userId)
       body: JSON.stringify({ userId, role }),
     });
     await AsyncStorage.setItem("role",role)
-        await setupOnesignal()
 
     router.replace(role === "driver" ? "/driver/home" : "/passenger/home");
   };

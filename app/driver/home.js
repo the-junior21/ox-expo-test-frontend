@@ -51,75 +51,10 @@ export default function DriverScreen() {
   const api_url = "https://ox-mvpp.onrender.com"
   console.log(Constants.expoConfig?.extra?.eas?.projectId,)
 
-  const registerForPushNotificationsAsync = async ()=>{
-
-    try{
-      /*if(!Device.isDevice){
-        console.log("must be a real device")
-            console.log("in if try is device ",Device.isDevice)
-
-        return
-      }*/
-  
-
-    const {status:existingStatus} = await Notifications.getPermissionsAsync()
-    let finalStatus = existingStatus
-    if(existingStatus !== 'granted'){
-
-      const {status} = await Notifications.requestPermissionsAsync()
-        finalStatus = status
-    
-    if(finalStatus !== 'granted'){
-      return
-    }
 
 
-    const tokenData = await Notifications.getExpoPushTokenAsync({projectId:Constants.expoConfig?.extra?.eas?.projectId,})
-              console.log("token ",tokenData)
 
-    const token = tokenData.data
-    console.log("driver push token: ",token)
-    const userId = await AsyncStorage.getItem('userId')
-    console.log("we show id by driver home ",userId)
-    if(!userId || !token){ 
-      console.log("missing userid or token")
-      return
-    }
-    console.log("sending push token")
-    console.log("userid ",userId)
-    console.log("token ",token)
-    const res = await fetch(`${api_url}/api/users/save-push-token`,{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        userId:userId,
-        pushToken:token
-      }),
-    });
-    console.log("req sent waiting res")
-    const data = await res.json()
-    console.log("backend response ",data)
-    return token
-    }
-    }catch(err){
-      console.log("push notification error ",err)
-    }
-  }
-useEffect(()=>{
-  registerForPushNotificationsAsync()
-},[])
-;
-useEffect(()=>{
-   setupOnesignal()
-},[])
-useEffect(()=>{
-  const sub = Notifications.addNotificationReceivedListener(notification =>{
-    console.log("Driver received push ",notification)
-  })
-  return ()=> sub.remove()
-},[])
+
 useEffect(()=>{
   Audio.setAudioModeAsync({
     playsInSilentModeIOS:true,
@@ -190,6 +125,7 @@ useEffect(() => {
       const userId = await AsyncStorage.getItem("userId");
       if (!userId) return;
       setUserId(userId);
+      await setupOnesignal()
     };
     loadUser();
   }, []);
