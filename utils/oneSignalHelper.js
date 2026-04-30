@@ -13,8 +13,8 @@ export const setupOnesignal = async()=>{
                    await OneSignal.Notifications.requestPermission(true);
                    let oneSignalId = null 
                    let attempts = 0
-                   while(!oneSignalId && attempts < 10){
-                    await new Promise(res => setTimeout(res,10000))
+                   while(!oneSignalId && attempts < 5){
+                    await new Promise(res => setTimeout(res,2000))
                     oneSignalId = await OneSignal.User.pushSubscription.getIdAsync();
                     console.log(`attempt ${attempts + 1} - onesignalId: `,oneSignalId)
                     attempts++

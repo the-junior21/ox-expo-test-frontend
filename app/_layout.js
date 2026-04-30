@@ -48,7 +48,7 @@ export default function Layout() {
     if(status === null) return <Text>Loading...</Text>
     if(status === "noLang"){
       if(current === undefined){
-          return <Stack />; 
+          return <Stack screenOptions={{headerShown:false}} />; 
       }
       return <Redirect href="/" />
     }
@@ -66,5 +66,6 @@ export default function Layout() {
     }
  
 
-  return <Stack screenOptions={{ headerShown: false }} />; 
+  return <Stack screenOptions={{headerShown:false }} />;
+   
 }

@@ -22,20 +22,7 @@ export default function LanguageScreen() {
     
     })()
   },[])
-  const triggerNotification = async()=>{
-    const {status} = await Notifications.getPermissionsAsync()
-    if(status !== 'granted'){
-      Alert.alert("permsn denied")
-      return
-    }
-    await Notifications.scheduleNotificationAsync({
-      content:{
-        title:"hello",
-        body:"not triggerd from btn"
-      },
-      trigger:null
-    })
-  }
+
   const selectLanguage = async (lang) => {
     i18n.locale = lang;
     await AsyncStorage.setItem("language", lang);
@@ -63,11 +50,20 @@ export default function LanguageScreen() {
          <Image source={require("../assets/images/ar.jpg")} style={styles.flag}/>
 
         </Pressable>
-        <Pressable style={styles.lang} onPress={triggerNotification}>
-          <Text style={styles.langText}> notify</Text>
 
-        </Pressable>
       </View>
+        <Text style={{
+          color:"white",
+          textAlign:"center",
+          position:"absolute",
+          bottom:80,
+          left:20,
+          right:20,
+          fontSize:13,
+          opacity:0.9,
+        }}>
+          لضمان افضل تجربة , يرجى تفعيل خدمة الموقع الجغرافي والسماح بالاشعارات عند تشغيل التطبيق فهي ضرورية لطلب الرحلات وتلقي التحديثات الفورية.
+        </Text>
     </View>
   );
 }
